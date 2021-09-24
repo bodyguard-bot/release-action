@@ -45,7 +45,8 @@ async function run(): Promise<Output> {
   core.info(`I found the following tags ${[...existingTags].join(', ')}`)
 
   const date = new Date()
-  const newTagPrefix = `${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}`
+
+  const newTagPrefix = `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`
   core.info(`New tag should be ${newTagPrefix}`)
 
   for (let i = 0; i < 1000; i++) {
@@ -55,7 +56,7 @@ async function run(): Promise<Output> {
     }
 
     core.info(`Creating tag ${newTag}`)
-    await octokit.rest.git.createTag({
+    const res = await octokit.rest.git.createTag({
       owner: context.repo.owner,
       repo: context.repo.repo,
       tag: newTag,
@@ -63,6 +64,7 @@ async function run(): Promise<Output> {
       object: String(GITHUB_SHA),
       type: 'commit'
     })
+    core.info(`Tag created ${JSON.stringify(res)}`)
 
     return {
       tag: newTag
