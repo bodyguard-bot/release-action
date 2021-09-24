@@ -56,7 +56,7 @@ async function run(): Promise<Output> {
     }
 
     core.info(`Creating tag ${newTag}`)
-    const res = await octokit.rest.git.createTag({
+    const createTagRes = await octokit.rest.git.createTag({
       owner: context.repo.owner,
       repo: context.repo.repo,
       tag: newTag,
@@ -64,7 +64,20 @@ async function run(): Promise<Output> {
       object: String(GITHUB_SHA),
       type: 'commit'
     })
-    core.info(`Tag created ${JSON.stringify(res)}`)
+    if (createTagRes.status !== 201) {
+      throw new Error(`Could not create tag. Received ${createTagRes.status} from API`)
+    }
+
+    core.info(`Creating ref ${newTag}`)
+    const createRefRes = await octokit.rest.git.createRef({
+      owner: context.repo.owner,
+      repo: context.repo.repo,
+      ref: `refs/tags/${newTag}`,
+      sha: createTagRes.data.sha
+    })
+    if (createRefRes.status !== 201) {
+      throw new Error(`Could not create ref. Received ${createRefRes.status} from API`)
+    }
 
     return {
       tag: newTag

@@ -77,7 +77,7 @@ function run() {
                 continue;
             }
             core.info(`Creating tag ${newTag}`);
-            const res = yield octokit.rest.git.createTag({
+            const createTagRes = yield octokit.rest.git.createTag({
                 owner: github_1.context.repo.owner,
                 repo: github_1.context.repo.repo,
                 tag: newTag,
@@ -85,7 +85,19 @@ function run() {
                 object: String(GITHUB_SHA),
                 type: 'commit'
             });
-            core.info(`Tag created ${JSON.stringify(res)}`);
+            if (createTagRes.status !== 201) {
+                throw new Error(`Could not create tag. Received ${createTagRes.status} from API`);
+            }
+            core.info(`Creating ref ${newTag}`);
+            const createRefRes = yield octokit.rest.git.createRef({
+                owner: github_1.context.repo.owner,
+                repo: github_1.context.repo.repo,
+                ref: `refs/tags/${newTag}`,
+                sha: createTagRes.data.sha
+            });
+            if (createRefRes.status !== 201) {
+                throw new Error(`Could not create ref. Received ${createRefRes.status} from API`);
+            }
             return {
                 tag: newTag
             };
