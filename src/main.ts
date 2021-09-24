@@ -87,7 +87,7 @@ async function main(): Promise<void> {
     const output = await run()
     core.setOutput('tag', output.tag)
   } catch (error) {
-    core.setFailed(error.message)
+    core.setFailed((error as Error).message)
   }
 }
 
