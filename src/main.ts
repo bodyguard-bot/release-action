@@ -42,8 +42,11 @@ async function run(): Promise<Output> {
   const octokit = getOctokit(githubToken)
   const existingTags = await listAllTags(octokit, context)
 
+  core.info(`I found the following tags ${[...existingTags].join(', ')}`)
+
   const date = new Date()
   const newTagPrefix = `${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}`
+  core.info(`New tag should be ${newTagPrefix}`)
 
   for (let i = 0; i < 1000; i++) {
     const newTag = `${newTagPrefix}.${i}`
@@ -51,7 +54,8 @@ async function run(): Promise<Output> {
       continue
     }
 
-    octokit.rest.git.createTag({
+    core.info(`Creating tag ${newTag}`)
+    await octokit.rest.git.createTag({
       owner: context.repo.owner,
       repo: context.repo.repo,
       tag: newTag,
