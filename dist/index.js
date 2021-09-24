@@ -67,14 +67,17 @@ function run() {
         // Get github client
         const octokit = github_1.getOctokit(githubToken);
         const existingTags = yield listAllTags(octokit, github_1.context);
+        core.info(`I found the following tags ${[...existingTags].join(', ')}`);
         const date = new Date();
         const newTagPrefix = `${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}`;
+        core.info(`New tag should be ${newTagPrefix}`);
         for (let i = 0; i < 1000; i++) {
             const newTag = `${newTagPrefix}.${i}`;
             if (existingTags.has(newTag)) {
                 continue;
             }
-            octokit.rest.git.createTag({
+            core.info(`Creating tag ${newTag}`);
+            yield octokit.rest.git.createTag({
                 owner: github_1.context.repo.owner,
                 repo: github_1.context.repo.repo,
                 tag: newTag,
