@@ -1,0 +1,42 @@
+{
+  "name": "release-action",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Github action to automatically create tag based on date",
+  "main": "lib/main.js",
+  "scripts": {
+    "build": "tsc",
+    "format": "prettier --write **/*.ts",
+    "format-check": "prettier --check **/*.ts",
+    "lint": "eslint src/**/*.ts",
+    "package": "ncc build --source-map --license licenses.txt",
+    "all": "npm run build && npm run format && npm run lint && npm run package && npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bodyguard-ai/release-action.git"
+  },
+  "keywords": [
+    "actions",
+    "node",
+    "setup"
+  ],
+  "author": "bodyguard-ai",
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "^1.4.0",
+    "@actions/github": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^16.3.3",
+    "@typescript-eslint/parser": "^4.28.3",
+    "@vercel/ncc": "^0.29.0",
+    "eslint": "^7.31.0",
+    "eslint-plugin-github": "^4.1.1",
+    "eslint-plugin-jest": "^24.3.6",
+    "js-yaml": "^4.1.0",
+    "prettier": "2.2.1",
+    "ts-jest": "^27.0.3",
+    "typescript": "^4.1.3"
+  }
+}

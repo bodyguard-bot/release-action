@@ -1,0 +1,13 @@
+name: 'action-release'
+description: 'Automatically create tag based on date'
+author: 'bodyguard-ai'
+inputs:
+  github_token:
+    required: true
+    description: 'the github token'
+outputs:
+  tag:
+    description: The newly created tag
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
